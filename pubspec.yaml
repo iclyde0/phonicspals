@@ -1,7 +1,7 @@
 name: phonics_pals
 description: "Gamified early literacy app for Kindergarten and Grade School. Building Strong Readers, One Game at a Time."
 publish_to: "none"
-version: 1.0.1+2
+version: 1.1.0+3
 
 environment:
   sdk: ^3.12.2

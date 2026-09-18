@@ -10,13 +10,32 @@ abstract final class PhonicsCurriculum {
     'j', 'z', 'w', 'v', 'y', 'x', 'q',
   ];
 
+  static const letterSets = <String, List<String>>{
+    'forest_1': ['s', 'a', 't', 'p', 'i', 'n'],
+    'forest_2': ['c', 'k', 'e', 'h', 'r', 'm', 'd'],
+    'forest_3': ['g', 'o', 'u', 'l', 'f', 'b'],
+    'forest_4': ['j', 'z', 'w', 'v', 'y', 'x', 'q'],
+  };
+
   static const cvcSets = <String, List<String>>{
-    'satpin': ['sat', 'pin', 'tin', 'tap', 'pat', 'sit', 'pan', 'nap'],
-    'cat_hat': ['cat', 'hat', 'mat', 'bat', 'rat', 'cap', 'map', 'man'],
-    'pig_dig': ['pig', 'dig', 'big', 'wig', 'pin', 'win', 'pit', 'sit'],
-    'dog_hop': ['dog', 'fog', 'log', 'hop', 'top', 'mop', 'pot', 'hot'],
-    'sun_run': ['sun', 'bun', 'run', 'cup', 'pup', 'bus', 'mug', 'fun'],
-    'bed_red': ['bed', 'red', 'hen', 'pen', 'ten', 'net', 'wet', 'leg'],
+    'satpin': [
+      'sat', 'pin', 'tin', 'tap', 'pat', 'sit', 'pan', 'nap', 'sip', 'nit', 'tip', 'pit',
+    ],
+    'cat_hat': [
+      'cat', 'hat', 'mat', 'bat', 'rat', 'cap', 'map', 'man', 'can', 'tan', 'ham', 'ram',
+    ],
+    'pig_dig': [
+      'pig', 'dig', 'big', 'wig', 'pin', 'win', 'pit', 'sit', 'fig', 'dip', 'hid', 'bit',
+    ],
+    'dog_hop': [
+      'dog', 'fog', 'log', 'hop', 'top', 'mop', 'pot', 'hot', 'dot', 'got', 'pop', 'lot',
+    ],
+    'sun_run': [
+      'sun', 'bun', 'run', 'cup', 'pup', 'bus', 'mug', 'fun', 'nut', 'cut', 'gum', 'rug',
+    ],
+    'bed_red': [
+      'bed', 'red', 'hen', 'pen', 'ten', 'net', 'wet', 'leg', 'peg', 'den', 'pet', 'beg',
+    ],
   };
 
   static const digraphs = ['sh', 'ch', 'th', 'wh', 'ck', 'ng'];
@@ -25,14 +44,30 @@ abstract final class PhonicsCurriculum {
     'the', 'and', 'see', 'look', 'you', 'me', 'we', 'to',
   ];
 
-  static const sentences = [
+  static const sentencesEasy = [
     SentenceItem('The cat sat on the mat.', 'cat', ['cat', 'sun', 'pig']),
     SentenceItem('A big red bus is here.', 'bus', ['bus', 'hat', 'dog']),
     SentenceItem('The pig can dig in mud.', 'pig', ['pig', 'cup', 'map']),
     SentenceItem('The sun is hot today.', 'sun', ['sun', 'pen', 'log']),
     SentenceItem('Look at the big dog.', 'dog', ['dog', 'bat', 'cup']),
     SentenceItem('I can hop to the top.', 'hop', ['hop', 'red', 'fan']),
+    SentenceItem('See the red hen.', 'hen', ['hen', 'mop', 'bus']),
+    SentenceItem('We can sit on the mat.', 'sit', ['sit', 'cup', 'fog']),
   ];
+
+  static const sentencesFast = [
+    SentenceItem('Look at me on the bus.', 'look', ['look', 'ship', 'chop']),
+    SentenceItem('You and me can run.', 'you', ['you', 'hot', 'leg']),
+    SentenceItem('We see the big sun.', 'see', ['see', 'pan', 'dig']),
+    SentenceItem('The duck can swim.', 'duck', ['duck', 'ship', 'when']),
+    SentenceItem('A king has a ring.', 'king', ['king', 'chop', 'that']),
+    SentenceItem('Then the ship can go.', 'then', ['then', 'shop', 'chip']),
+    SentenceItem('When can we hop?', 'when', ['when', 'that', 'shop']),
+    SentenceItem('The chick can peck.', 'chick', ['chick', 'this', 'song']),
+  ];
+
+  /// All fluency sentences (easy + faster banks).
+  static List<SentenceItem> get sentences => [...sentencesEasy, ...sentencesFast];
 
   static const storyBeats = [
     StoryBeat(
@@ -42,10 +77,34 @@ abstract final class PhonicsCurriculum {
       answer: 'ship',
     ),
     StoryBeat(
+      prompt: 'Palsy wants to shop. Tap the word with sh.',
+      target: 'sh',
+      options: ['shop', 'when', 'then'],
+      answer: 'shop',
+    ),
+    StoryBeat(
+      prompt: 'A fish is in the pond. Tap the word with sh.',
+      target: 'sh',
+      options: ['fish', 'chop', 'this'],
+      answer: 'fish',
+    ),
+    StoryBeat(
       prompt: 'A chick is hungry. Tap the word with ch.',
       target: 'ch',
       options: ['this', 'chop', 'when'],
       answer: 'chop',
+    ),
+    StoryBeat(
+      prompt: 'The chick says peep. Tap the word with ch.',
+      target: 'ch',
+      options: ['chick', 'shop', 'that'],
+      answer: 'chick',
+    ),
+    StoryBeat(
+      prompt: 'Sit in a chair. Tap the word with ch.',
+      target: 'ch',
+      options: ['chair', 'ship', 'then'],
+      answer: 'chair',
     ),
     StoryBeat(
       prompt: 'Point to the word with th.',
@@ -54,12 +113,97 @@ abstract final class PhonicsCurriculum {
       answer: 'then',
     ),
     StoryBeat(
+      prompt: 'This is Palsy’s path. Tap the word with th.',
+      target: 'th',
+      options: ['this', 'chop', 'when'],
+      answer: 'this',
+    ),
+    StoryBeat(
+      prompt: 'That hat is red. Tap the word with th.',
+      target: 'th',
+      options: ['that', 'ship', 'chip'],
+      answer: 'that',
+    ),
+    StoryBeat(
       prompt: 'Which word has wh?',
       target: 'wh',
       options: ['when', 'that', 'shop'],
       answer: 'when',
     ),
+    StoryBeat(
+      prompt: 'Palsy asks which way. Tap the word with wh.',
+      target: 'wh',
+      options: ['which', 'then', 'chop'],
+      answer: 'which',
+    ),
+    StoryBeat(
+      prompt: 'A whale is in the sea. Tap the word with wh.',
+      target: 'wh',
+      options: ['whale', 'this', 'ship'],
+      answer: 'whale',
+    ),
+    StoryBeat(
+      prompt: 'Find the duck. Tap the word with ck.',
+      target: 'ck',
+      options: ['duck', 'ship', 'when'],
+      answer: 'duck',
+    ),
+    StoryBeat(
+      prompt: 'Palsy wants a snack. Tap the word with ck.',
+      target: 'ck',
+      options: ['snack', 'then', 'shop'],
+      answer: 'snack',
+    ),
+    StoryBeat(
+      prompt: 'Kick the ball. Tap the word with ck.',
+      target: 'ck',
+      options: ['kick', 'that', 'chop'],
+      answer: 'kick',
+    ),
+    StoryBeat(
+      prompt: 'Hear the song. Tap the word with ng.',
+      target: 'ng',
+      options: ['song', 'ship', 'when'],
+      answer: 'song',
+    ),
+    StoryBeat(
+      prompt: 'Find the king. Tap the word with ng.',
+      target: 'ng',
+      options: ['king', 'chop', 'that'],
+      answer: 'king',
+    ),
+    StoryBeat(
+      prompt: 'A ring for Palsy. Tap the word with ng.',
+      target: 'ng',
+      options: ['ring', 'this', 'shop'],
+      answer: 'ring',
+    ),
   ];
+
+  static List<String> letterPoolFor(String levelId) =>
+      letterSets[levelId] ?? List<String>.from(stage1Letters);
+
+  static List<StoryBeat> storyBeatsFor(String levelId) {
+    final filter = switch (levelId) {
+      'desert_1' => const ['sh', 'ch'],
+      'desert_2' => const ['th', 'wh'],
+      'desert_3' => digraphs,
+      _ => digraphs,
+    };
+    final beats = storyBeats.where((beat) => filter.contains(beat.target)).toList();
+    return beats;
+  }
+
+  static List<SentenceItem> sentencesFor(String levelId) => switch (levelId) {
+        'falls_2' => List<SentenceItem>.from(sentencesFast),
+        _ => List<SentenceItem>.from(sentencesEasy),
+      };
+
+  /// Per-item time limit for Speed Runner. Null means untimed (Read and match).
+  static Duration? timeLimitFor(String levelId) => switch (levelId) {
+        'falls_2' => const Duration(seconds: 8),
+        _ => null,
+      };
 }
 
 class SentenceItem {
@@ -177,15 +321,26 @@ class PhonicsEngine {
     );
   }
 
-  List<String> distractorsFor(String target, {int count = 3}) {
-    final pool = PhonicsCurriculum.stage1Letters
+  List<String> distractorsFor(
+    String target, {
+    int count = 3,
+    List<String>? pool,
+  }) {
+    final letters = pool ?? PhonicsCurriculum.stage1Letters;
+    final options = letters
         .where((letter) => letter != target.toLowerCase())
         .toList()
       ..shuffle(_random);
-    return pool.take(count).toList();
+    return options.take(count).toList();
   }
 
   List<String> lettersOf(String word) => word.toLowerCase().split('');
 
   String _pick(List<String> items) => items[_random.nextInt(items.length)];
+}
+
+/// Wallet stars are the improvement over the previous best for that lesson.
+int walletStarsFor({required int previousBest, required int earnedStars}) {
+  if (earnedStars <= previousBest) return 0;
+  return earnedStars - previousBest;
 }

@@ -110,6 +110,7 @@ abstract final class WorldRealms {
       howToSteps: [
         'Tap Start, then read the sentence.',
         'Tap the word that matches what you read.',
+        'On Faster sentences, tap before the timer runs out!',
         'Go as quickly as you can — Palsy is cheering!',
       ],
       levels: [

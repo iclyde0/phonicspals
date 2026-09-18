@@ -32,6 +32,40 @@ void main() {
     expect(lesson.targets, contains('s'));
   });
 
+  test('letter pools stay inside each forest lesson', () {
+    expect(PhonicsCurriculum.letterPoolFor('forest_1'), ['s', 'a', 't', 'p', 'i', 'n']);
+    expect(PhonicsCurriculum.letterPoolFor('forest_2'), containsAll(['c', 'k', 'e']));
+    expect(PhonicsCurriculum.letterPoolFor('forest_5'), PhonicsCurriculum.stage1Letters);
+    final mixed = PhonicsCurriculum.letterPoolFor('forest_1');
+    expect(mixed, isNot(contains('q')));
+  });
+
+  test('story quest and speed runner banks differ by level', () {
+    final shCh = PhonicsCurriculum.storyBeatsFor('desert_1');
+    expect(shCh.every((beat) => beat.target == 'sh' || beat.target == 'ch'), isTrue);
+    expect(shCh.length, greaterThanOrEqualTo(4));
+
+    final thWh = PhonicsCurriculum.storyBeatsFor('desert_2');
+    expect(thWh.every((beat) => beat.target == 'th' || beat.target == 'wh'), isTrue);
+
+    final mix = PhonicsCurriculum.storyBeatsFor('desert_3');
+    expect(mix.map((beat) => beat.target), containsAll(['ck', 'ng']));
+
+    expect(PhonicsCurriculum.timeLimitFor('falls_1'), isNull);
+    expect(PhonicsCurriculum.timeLimitFor('falls_2'), const Duration(seconds: 8));
+    expect(
+      PhonicsCurriculum.sentencesFor('falls_2').map((item) => item.focus),
+      containsAll(['look', 'duck', 'king']),
+    );
+  });
+
+  test('wallet stars only increase when the best score improves', () {
+    expect(walletStarsFor(previousBest: 0, earnedStars: 2), 2);
+    expect(walletStarsFor(previousBest: 2, earnedStars: 3), 1);
+    expect(walletStarsFor(previousBest: 3, earnedStars: 2), 0);
+    expect(walletStarsFor(previousBest: 3, earnedStars: 3), 0);
+  });
+
   test('star scoring matches session thresholds', () {
     expect(SessionResultSheet.starsFor(8, 8), 3);
     expect(SessionResultSheet.starsFor(6, 8), 2);

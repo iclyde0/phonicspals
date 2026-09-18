@@ -1,0 +1,18 @@
+---
+description: Remaining PhonicsPals improvements after levels, content, and star economy.
+alwaysApply: true
+---
+
+# Next PhonicsPals improvements
+
+Improvements 1–3 are done (level-specific content, bigger phonics banks, wallet stars only on a new best). Do these next, in order:
+
+4. **Parent gate** — Randomize the 4+3 puzzle. Stop treating Skip as unlock. Hash the PIN before Hive. Add change/remove PIN in the Parent Portal. Show CVC/digraph progress, not only A–Z.
+
+5. **Settings** — Use the unused Hive settings box for volume, TTS on/off, and replay-last-sound. Add a How to play button on every lesson, not only the first empty world.
+
+6. **Kid usability** — Larger tap targets, TalkBack/Semantics labels, tap-to-choose as well as drag-and-drop. Replay the first-lesson tutorial even after other stars exist in that world.
+
+7. **Play Store / Families** — Host the privacy policy URL, complete Designed for Families and Data safety, drop unused `google_fonts`.
+
+8. **Later growth** — More closet items, a daily challenge, gentler miss feedback, tablet layout, optional Filipino/English.

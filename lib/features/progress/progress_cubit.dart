@@ -52,7 +52,8 @@ class ProgressCubit extends Cubit<ProgressState> {
     levels[levelId] = best;
     await _persist(
       state.player.copyWith(
-        stars: state.player.stars + earnedStars,
+        stars: state.player.stars +
+            walletStarsFor(previousBest: previous, earnedStars: earnedStars),
         levelStars: levels,
         sessionsCompleted: state.player.sessionsCompleted + 1,
       ),
@@ -91,7 +92,11 @@ class ProgressCubit extends Cubit<ProgressState> {
     await _persist(PlayerProgress(parentPin: pin));
   }
 
-  LessonRequest nextLetters({int count = 8}) {
-    return engine.getNextPhonemeLesson(state.player.phonemes, count: count);
+  LessonRequest nextLetters({int count = 8, List<String>? pool}) {
+    return engine.getNextPhonemeLesson(
+      state.player.phonemes,
+      count: count,
+      pool: pool ?? PhonicsCurriculum.stage1Letters,
+    );
   }
 }

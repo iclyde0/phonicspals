@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/audio/phonics_audio_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/phonics_engine.dart';
 import '../../../core/widgets/status_bar.dart';
 import '../../mascot/mascot_mood.dart';
 import '../../mascot/mascot_widget.dart';
@@ -35,10 +36,12 @@ class _LetterCatchScreenState extends State<LetterCatchScreen> {
   void initState() {
     super.initState();
     _game = LetterCatchGame(onGuess: _onGuess);
-    _targets = const ['s', 'a', 't', 'p', 'i', 'n', 'c', 'k'];
+    _targets = PhonicsCurriculum.letterPoolFor(widget.levelId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _targets = context.read<ProgressCubit>().nextLetters(count: 8).targets;
+      final pool = PhonicsCurriculum.letterPoolFor(widget.levelId);
+      final count = widget.levelId == 'forest_6' ? 10 : 8;
+      _targets = context.read<ProgressCubit>().nextLetters(count: count, pool: pool).targets;
       _startRound();
     });
   }
@@ -46,7 +49,8 @@ class _LetterCatchScreenState extends State<LetterCatchScreen> {
   Future<void> _startRound() async {
     final cubit = context.read<ProgressCubit>();
     final audio = context.read<PhonicsAudioService>();
-    final options = cubit.engine.distractorsFor(_current);
+    final pool = PhonicsCurriculum.letterPoolFor(widget.levelId);
+    final options = cubit.engine.distractorsFor(_current, pool: pool);
     _game.loadRound(_current, options);
     setState(() {
       _mood = MascotMood.hinting;

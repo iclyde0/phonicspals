@@ -96,6 +96,8 @@ class PhonicsAudioService {
       'sh': 'sh',
       'ch': 'ch',
       'th': 'th',
+      'ck': 'ck',
+      'wh': 'wh',
       'ng': 'ing',
     };
     return sounds[id] ?? id;

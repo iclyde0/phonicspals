@@ -22,7 +22,7 @@ class StoryQuestScreen extends StatefulWidget {
 }
 
 class _StoryQuestScreenState extends State<StoryQuestScreen> {
-  late final List<StoryBeat> _beats;
+  late List<StoryBeat> _beats;
   var _index = 0;
   var _correct = 0;
   var _mood = MascotMood.hinting;
@@ -32,7 +32,10 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
   @override
   void initState() {
     super.initState();
-    _beats = List<StoryBeat>.from(PhonicsCurriculum.storyBeats)..shuffle();
+    _beats = PhonicsCurriculum.storyBeatsFor(widget.levelId)..shuffle();
+    if (_beats.length > 6) {
+      _beats = _beats.take(6).toList();
+    }
   }
 
   Future<void> _pick(String option) async {

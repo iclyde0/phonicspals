@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,43 +25,91 @@ class SpeedRunnerScreen extends StatefulWidget {
 
 class _SpeedRunnerScreenState extends State<SpeedRunnerScreen> {
   late final List<SentenceItem> _items;
+  late final Duration? _limit;
   var _index = 0;
   var _correct = 0;
   var _mood = MascotMood.idle;
   var _started = false;
-  final _sw = Stopwatch();
+  var _busy = false;
+  Timer? _tick;
+  var _remaining = 0;
 
   SentenceItem get _item => _items[_index];
+  bool get _timed => _limit != null;
 
   @override
   void initState() {
     super.initState();
-    _items = List<SentenceItem>.from(PhonicsCurriculum.sentences)..shuffle();
+    _limit = PhonicsCurriculum.timeLimitFor(widget.levelId);
+    _items = PhonicsCurriculum.sentencesFor(widget.levelId)..shuffle();
+    if (_items.length > 6) {
+      _items.removeRange(6, _items.length);
+    }
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
   }
 
   void _begin() {
     setState(() => _started = true);
-    _sw.start();
+    _armTimer();
     context.read<PhonicsAudioService>().playWord(_item.focus);
   }
 
+  void _armTimer() {
+    _tick?.cancel();
+    if (!_timed) return;
+    setState(() => _remaining = _limit!.inSeconds);
+    _tick = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_remaining <= 1) {
+        timer.cancel();
+        _onTimeout();
+        return;
+      }
+      setState(() => _remaining--);
+    });
+  }
+
+  Future<void> _onTimeout() async {
+    if (_busy || !mounted) return;
+    await _resolve(correct: false, timedOut: true);
+  }
+
   Future<void> _pick(String option) async {
-    final ok = option == _item.focus;
+    if (_busy) return;
+    await _resolve(correct: option == _item.focus);
+  }
+
+  Future<void> _resolve({required bool correct, bool timedOut = false}) async {
+    if (_busy || !mounted) return;
+    _busy = true;
+    _tick?.cancel();
     final cubit = context.read<ProgressCubit>();
     final audio = context.read<PhonicsAudioService>();
-    await cubit.recordAttempt(_item.focus, ok);
-    if (ok) {
+    await cubit.recordAttempt(_item.focus, correct);
+    if (correct) {
       _correct++;
       await audio.playSuccess();
       setState(() => _mood = MascotMood.celebrating);
     } else {
       await audio.playError();
       setState(() => _mood = MascotMood.encouraging);
-      return;
+      if (!timedOut) {
+        _busy = false;
+        _armTimer();
+        return;
+      }
     }
     await Future<void>.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
     if (_index >= _items.length - 1) {
-      _sw.stop();
       final stars = SessionResultSheet.starsFor(_correct, _items.length);
       await cubit.completeLevel(
         levelId: widget.levelId,
@@ -79,7 +129,9 @@ class _SpeedRunnerScreenState extends State<SpeedRunnerScreen> {
     setState(() {
       _index++;
       _mood = MascotMood.idle;
+      _busy = false;
     });
+    _armTimer();
     await audio.playWord(_item.focus);
   }
 
@@ -99,12 +151,17 @@ class _SpeedRunnerScreenState extends State<SpeedRunnerScreen> {
           children: [
             const TopStatusBar(showBack: true),
             Text('Speed Runner', style: AppTheme.fredoka(size: 26, color: AppColors.secondaryDark)),
+            if (_timed)
+              Text(
+                _started ? '$_remaining seconds' : 'Beat the timer!',
+                style: AppTheme.nunito(size: 16, color: AppColors.primaryDark),
+              ),
             MascotWidget(size: 120, mood: _mood, hatId: hat),
             if (!_started)
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: KidButton(
-                  label: 'Start reading',
+                  label: _timed ? 'Start — go fast!' : 'Start reading',
                   icon: Icons.play_arrow_rounded,
                   onPressed: _begin,
                 ),
